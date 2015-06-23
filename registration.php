@@ -8,6 +8,10 @@ Author: ArtCraft
 Author URI: http://web-artcraft.com
  */
 
+ 
+ /*
+	Kirill
+ */
 define('REG_DIR', plugin_dir_path(__FILE__));
 define('REG_URL', plugin_dir_url(__FILE__));
 
