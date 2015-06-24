@@ -5,7 +5,9 @@
  * Date: 10.06.2015
  * Time: 16:25
  */
-
+/*
+ test
+ */
 function gen_pass($max = 10){
     $chars="qazxswedcvfrtgbnhyujmkiolp1234567890QAZXSWEDCVFRTGBNHYUJMKIOLP";
 
@@ -24,4 +26,48 @@ function prn_reg($content) {
     echo '<pre style="background: lightgray; border: 1px solid black; padding: 2px">';
     print_r ( $content );
     echo '</pre>';
+}
+
+//аякс экшн
+add_action('wp_ajax_region', 'get_region');
+add_action('wp_ajax_nopriv_region', 'get_region');
+//получение регионов
+function get_region(){
+    global $wpdb;
+    $sql = "SELECT `name` FROM `region` WHERE id_country=1";
+    $result = $wpdb->get_results($sql,ARRAY_A);
+    
+    $data = array();
+
+    foreach ($result as $region) {
+        $data[] = $region['name'];
+    }
+    //prn_reg($data);
+    $data = json_encode($data);
+    echo $data;
+    die();
+}
+//аякс экшн города
+add_action('wp_ajax_city', 'get_city');
+add_action('wp_ajax_nopriv_city', 'get_city');
+//получение городов
+function get_city(){
+    global $wpdb;
+    $region = $_POST['region'];
+
+    $sql_region = "SELECT 'id_region' FROM `region` WHERE name LIKE '$region'";
+    $result_region = $wpdb->get_results($sql_region,ARRAY_A);
+
+    $sql = "SELECT `name` FROM `city` WHERE id_region=".$result_region[0]['id_region'];
+    $result = $wpdb->get_results($sql,ARRAY_A);
+
+    $data = array();
+
+    foreach ($result as $city) {
+        $data[] = $city['name'];
+    }
+
+    $data= json_encode($data);
+    echo $data;
+    die();
 }

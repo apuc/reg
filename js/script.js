@@ -1,4 +1,6 @@
 $(document).ready(function(){
+    var city = [];
+
    $('#country').on('change', function(){
        var val = $(this).val();
 
@@ -47,10 +49,50 @@ $(document).ready(function(){
         }
     });
 
+    $(document).on('click', '.ui-menu-item', function(){
+
+        var region_id = $("#region").val();
+        alert(region_id);
+        $.ajax({
+            url: myajax.url, //url, к которому обращаемся
+            type: "POST",
+            data: "action=city&region="+region_id, //данные, которые передаем. Обязательно для action указываем имя нашего хука
+            success: function(data){
+                //возвращаемые данные попадают в переменную data
+                un_data = $.parseJSON(data);
+                $.each(un_data, function( index, value ) {
+                    city.push(value);
+                });
+               //$(".debug").html(data);
+            }
+        });
+
+    });
+
     $(function() {
+        var region = [];
+
+        $.ajax({
+            url: myajax.url, //url, к которому обращаемся
+            type: "POST",
+            data: "action=region", //данные, которые передаем. Обязательно для action указываем имя нашего хука
+            success: function(data){
+                //возвращаемые данные попадают в переменную data
+                un_data = $.parseJSON(data);
+
+                $.each(un_data, function( index, value ) {
+                    region.push(value);
+                });
+            }
+        });
 
         $('#region').autocomplete({
             source: region
         })
+
+        $('#city').autocomplete({
+            source: city
+        })
+
     });
 });
