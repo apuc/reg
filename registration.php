@@ -17,6 +17,7 @@ define('REG_URL', plugin_dir_url(__FILE__));
 
 require_once(REG_DIR."/class/parser.php");
 require_once(REG_DIR."/functions.php");
+//require_once(REG_DIR."/tree.php");
 
 function add_reg_style(){
     wp_enqueue_style( 'bootstrap-style', REG_URL . 'css/bootstrap.min.css', array(), '1');
@@ -29,6 +30,7 @@ function add_reg_style(){
 function add_reg_script(){
     wp_enqueue_script( 'jq_reg', REG_URL.'js/jquery-2.1.3.min.js', array(), '1');
     wp_enqueue_script( 'boot_reg', REG_URL.'js/bootstrap.min.js', array(), '1');
+    wp_enqueue_script( 'boot_reg', REG_URL.'js/valid.js', array(), '1');
     wp_enqueue_script( 'fuelux_reg', REG_URL.'js/fuelux.min.js', array(), '1');
     wp_enqueue_script( 'jq_ui', REG_URL.'js/jquery-ui.min.js', array(), '1');
     wp_enqueue_script( 'reg_region', REG_URL.'js/regions.js', array(), '1');
@@ -65,7 +67,11 @@ function add_user_aj_function(){
 
 function reg_form(){
     $parser = new ParserReg();
-    if(isset($_POST['lastName'])){
+
+    if(isset($_POST['user_email_doc'])){
+        $parser->parse(REG_DIR."/views/reg_success.php", array(), true);
+    }
+    elseif(isset($_POST['lastName'])){
         //prn_reg($_POST);
         $user_id = reg_user($_POST);
         reg_user_meta($user_id, $_POST);
@@ -76,6 +82,9 @@ function reg_form(){
         $data['step2'] = $parser->parse(REG_DIR."views/reg_form.php", array(), false);
         $data['step3'] = $parser->parse(REG_DIR."views/step3.php", array(), false);
         $parser->parse(REG_DIR."views/reg-wizard.php", $data, true);
+        echo '
+
+        ';
     }
 }
 
@@ -147,3 +156,4 @@ function get_all_user_meta($user_id){
     }
     return $arr;
 }
+

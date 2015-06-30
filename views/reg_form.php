@@ -1,7 +1,7 @@
 <h4>Паспортные данные</h4>
-<form method="post" id="user_form">
+<form method="post" id="user_form" class="rf">
 
-        <p>Фамилия <br/><input type="text" name="lastName" pattern="[А-ЯЁ][а-яё]+" required placeholder="Фамилия"/></p>
+        <p>Фамилия <br/><input type="text" class="rfield" name="lastName" pattern="[А-ЯЁ][а-яё]+" required placeholder="Фамилия"/></p>
 
         <p>Имя <br/><input type="text" name="firstName" pattern="[А-ЯЁ][а-яё]+" required placeholder="Имя"/></p>
 
@@ -93,5 +93,5 @@
         </p>
 
 
-        <input type="button" id="send_user_info" value="Отправить"/>
+        <input type="submit" class="btn_submit" id="send_user_info" value="Отправить"/>
 </form>

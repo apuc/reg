@@ -71,3 +71,47 @@ function get_city(){
     echo $data;
     die();
 }
+
+function get_tree($par_id, $first = 1){
+    global $wpdb;
+    $q = "SELECT * FROM `class_okved` WHERE `parent_id` = $par_id";
+    $res = $wpdb->get_results($q);
+    if($first == 1){
+        echo '<ul class="parent-ul">';
+    }
+    else {
+        echo '<ul class="child-ul">';
+    }
+    foreach($res as $row){
+        if(is_child($row->id)){
+            echo  '<li><a href="#" class="parent-link">'.$row->name.'</a></li>';
+        }
+        else {
+            echo  '<li><a href="#" style="color:GREEN;" class="no-child">'.$row->name.'</a></li>';
+        }
+        get_tree($row->id, 2);
+    }
+    echo  '</ul>';
+}
+
+function get_all_parent_id(){
+    global $wpdb;
+    $q = "SELECT *  FROM `class_okved` WHERE `parent_id` IS NULL";
+    $res = $wpdb->get_results($q);
+    foreach($res as $v){
+        $arr[] = $v->id;
+    }
+    return $arr;
+}
+
+function is_child($id){
+    global $wpdb;
+    $q = "SELECT *  FROM `class_okved` WHERE `parent_id` = $id";
+    $res = $wpdb->get_results($q);
+    if(empty($res)){
+        return false;
+    }
+    else {
+        return true;
+    }
+}

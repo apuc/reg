@@ -25,6 +25,18 @@ $(document).ready(function(){
         }
     });
 
+    $('#show-modal').on('click', function(){
+       $('.myModalWrap').toggle();
+    });
+
+    /*$('.myModalWrap').on('click', function(){
+        $('.myModalWrap').toggle();
+    });*/
+
+    $(document).on('click', '#close-modal', function(){
+        $('.myModalWrap').hide();
+    });
+
     $('#send_user_info').on('click', function(){
         var post = $('#user_form').serialize();
         post = post + "&action=add_user_aj";
@@ -67,6 +79,20 @@ $(document).ready(function(){
             }
         });
 
+    });
+
+
+
+    $(document).on('click', '.parent-link', function(){
+        $(this).parent().next('.child-ul').toggle();
+        return false;
+    });
+
+    $(document).on('click', '.no-child', function(){
+        var text = $(this).html();
+        $('#okved').append('<p class="okved-el">'+text+'</p>');
+        $('#okved-wiz').append('<p class="okved-el">'+text+'</p>');
+        return false;
     });
 
     $(function() {
