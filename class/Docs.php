@@ -10,6 +10,7 @@
         const ukraine = 2;
 
         private $adminMail = '';
+        private $userMail = '';
 
         private $word;
         private $tags;
@@ -22,7 +23,12 @@
             self::OOO => []
         ];
         private $russia = [
-            self::IP  => ['gosposhlina-1.docx',],
+            self::IP  => [
+                'gosposhlina-1.docx',
+                'instruktsiya po registratsii-1.docx',
+                'proshivka.docx',
+                'zayavleniye na registratsiyu-1.docx'
+            ],
             self::OOO => []
         ];
         private $ukraine = [
@@ -32,20 +38,18 @@
         private $country;
         private $businessType;
 
-
         /**
          * @param string $dir адрес папки в которой лежат папки doc-templates и ready-docs
-         * @param string $inn это индификационный пользователя
+         * @param string $inn это идентификационный пользователя
          * @param string $country moldova russia ukraine
          * @param string $businessType IP OOO
          */
-        public function __construct($dir, $inn, $country, $businessType)
+        public function __construct($dir, $country, $businessType)
         {
             $this->word = new PHPWord();
 
             $this->country = $country;
             $this->businessType = $businessType;
-            $this->folder = md5($inn);
             $this->dir = $dir;
         }
 
@@ -80,14 +84,18 @@
             return true;
         }
 
-        public function saveDocsAndMail($mail)
+        public function saveDocsAndMail($mail = '')
         {
             $this->saveDocs();
+            $mail = $mail ? $mail : $this->userMail;
             $this->mailTo($mail);
         }
 
         public function mailTo($mail)
         {
+            if (!$mail)
+                throw new Exception("Почта не задана.");
+
             $text = "Это сообщение из <br> двух строк.";
             $subj = 'me@localhost.ru';
             $to = "$mail, $this->adminMail";
@@ -126,6 +134,16 @@
                 return 0;
             else
                 return 1;
+        }
+
+        public function setUserMail($mail)
+        {
+            $this->userMail = $mail;
+        }
+
+        public function setUserINN($inn)
+        {
+            $this->folder = md5($inn);
         }
 
         private function getCountryName($country)

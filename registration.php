@@ -63,23 +63,44 @@
 
     add_action('wp_ajax_add_user_aj', 'add_user_aj_function');
     add_action('wp_ajax_nopriv_add_user_aj', 'add_user_aj_function');
+    add_action('wp_ajax_add_address_aj', 'add_address_aj_function');
+
+    $doc = new Docs(__DIR__, Docs::russia, Docs::IP);
 
     function add_user_aj_function()
     {
+        global $doc;
+
         $user_id = reg_user($_POST);
         reg_user_meta($user_id, $_POST);
 
-        $doc = new Docs(__DIR__, $_POST['inn'], Docs::russia, Docs::IP);
+        $doc->setUserMail($_POST['email']);
+        $doc->setUserINN($_POST['inn']);
 
         $fio = $_POST['lastName'] . ' ' . $_POST['firstName'] . ' ' . $_POST['middleName'];
 
         $doc->setTag('FIO', $fio);
 
-        $doc->saveDocsAndMail($_POST['email']);
-
-        header('Content-type: text/plain');
+        header('Content-Type: application/json');
         echo json_encode(['mark' => $user_id]);
+        die;
+    }
 
+    function add_address_aj_function()
+    {
+        global $doc;
+
+        $user_id = $_POST['temp_user_id'];
+        add_meta_at_step_3($user_id, $_POST);
+        //reg_user_meta();
+
+        $address = 'г. ' . $_POST['city'] . ' ул. ' . $_POST['street'] . ' д. ' . $_POST['home'] . ' кв. ' . $_POST['kv'];
+        $doc->setTag('ADDRESS', $address);
+
+        //header('Content-Type: application/json');
+        header('Content-Type: text/plain');
+        echo json_encode(['mark' => is_numeric($user_id)]);
+        die;
     }
 
     function reg_form()
@@ -150,7 +171,25 @@
         ];
 
         foreach ($user as $k => $v) {
-            add_user_meta($user_id, $k, $v, true);
+            update_user_meta($user_id, $k, $v, true);
+        }
+    }
+
+    function add_meta_at_step_3($user_id, $arr)
+    {
+        $user_meta = [
+            'region'     => $arr['region'],
+            'city'       => $arr['city'],
+            'street'     => $arr['street'],
+            'index'      => $arr['index'],
+            'house_type' => $arr['house_type'],
+            'house'      => $arr['house'],
+            'kv_type'    => $arr['kv_type'],
+            'kv'         => $arr['kv'],
+        ];
+
+        foreach ($user_meta as $k => $v) {
+            update_user_meta($user_id, $k, $v, true);
         }
     }
 

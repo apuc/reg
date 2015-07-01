@@ -39,16 +39,45 @@ $(document).ready(function () {
 
     $('#send_user_info').on('click', function () {
         var post = $('#user_form').serialize();
-        post = post + "&action=add_user_aj";
+        var url = post + "&action=add_user_aj";
         console.log(post);
         $.ajax({
             url: myajax.url, //url, к которому обращаемся
             type: "POST",
-            data: post, //данные, которые передаем. Обязательно для action указываем имя нашего хука
+            data: url, //данные, которые передаем. Обязательно для action указываем имя нашего хука
+            dataType: 'json',
             success: function (data) {
                 console.log(data);
-                if (data.length < 18) {
-                    $('#user_form').html(data);
+                var num = data['mark'];
+                var mark = parseInt(num);
+                if (!isNaN(mark)) {
+                    temp_user_id = mark;
+                    $('#user_form').html(post.unserialize);
+                    $('.btn-next').removeAttr("disabled");
+                    alert("Данные сохранены.")
+                }
+                else {
+                    alert('Произошла ошибка, попробуйте ввести данные снова или обратитесь к админстатору.')
+                }
+            }
+        });
+    });
+
+    $('#send_address_info').on('click', function () {
+        var post = $('#address_form').serialize();
+        var url = post + "&action=add_address_aj&temp_user_id=" + temp_user_id;
+
+        alert(url);
+
+        $.ajax({
+            url: myajax.url, //url, к которому обращаемся
+            type: "POST",
+            data: url, //данные, которые передаем. Обязательно для action указываем имя нашего хука
+            dataType: 'json',
+            success: function (data) {
+                console.log(data);
+                if (data['mark'] == true) {
+                    $('#address_form').html(post.unserialize);
                     $('.btn-next').removeAttr("disabled");
                     alert("Данные сохранены.")
                 }
@@ -69,7 +98,6 @@ $(document).ready(function () {
     });
 
     $(document).on('click', '.ui-menu-item', function () {
-
         var region_id = $("#region").val();
         alert(region_id);
         $.ajax({
@@ -85,7 +113,6 @@ $(document).ready(function () {
                 //$(".debug").html(data);
             }
         });
-
     });
 
 
